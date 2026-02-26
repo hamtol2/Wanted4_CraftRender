@@ -29,6 +29,7 @@ int main()
 	// 창 생성.
 	Craft::Win32Window window(
 		width, height,
+		title,
 		hInstance,
 		WindowProc
 	);
@@ -41,7 +42,7 @@ int main()
 
 	// 장치 생성 테스트.
 	Craft::GraphicsContext context;
-	context.Initialize(width, height, window);
+	context.Initialize(window);
 
 	// 창에서 발생하는 메시지 처리 루프.
 	// GetMessage - 동기 방식(Blocking 방식).
