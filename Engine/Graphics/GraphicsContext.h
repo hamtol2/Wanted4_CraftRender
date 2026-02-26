@@ -9,6 +9,11 @@
 // Device: 리소스 생성.
 // DeviceContext: 생성된 리소스를 그래픽카드에 할당(바인딩)/드로우콜.
 // SwapChain(스왑체인): 백버퍼-프론트버퍼 교환.
+// RenderTargetView(렌더 타겟 뷰): 화면에 그릴 프레임(이미지) 리소스.
+// View(뷰): 특별한 리소스 CPU<->GPU간의 소통을 위해 사용.
+// -> CPU에서 리소스를 생성하면 이걸 본따서 GPU에서 복제본을 만들고 사용함.
+// 포워드 렌더러(Forward Renderer) -> 우리는 이걸.
+// 디퍼드 렌더러(Deffered Renderer).
 
 namespace Craft
 {
