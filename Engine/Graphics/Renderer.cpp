@@ -108,22 +108,167 @@ namespace Craft
 		}
 
 		// 셰이더 컴파일.
+		// 두 번(VS/PS).
+		/*
+		*   _In_reads_opt_(_Inexpressible_(pDefines->Name != NULL)) CONST D3D_SHADER_MACRO* pDefines,
+        _In_opt_ ID3DInclude* pInclude,
+        _In_ LPCSTR pEntrypoint,
+        _In_ LPCSTR pTarget,
+        _In_ UINT Flags1,
+        _In_ UINT Flags2,
+        _Out_ ID3DBlob** ppCode,
+        _Always_(_Outptr_opt_result_maybenull_) ID3DBlob**
+		*/
+		// 컴파일된 Object 코드 저장 객체.
+		ID3DBlob* vertexShaderObject = nullptr;
+		result = D3DCompileFromFile(
+			L"HLSLShader/DefaultVS.hlsl",
+			nullptr,
+			nullptr,
+			"main",
+			"vs_5_0",
+			0,
+			0,
+			&vertexShaderObject,
+			nullptr
+		);
+
+		if (FAILED(result))
+		{
+			__debugbreak();
+			return;
+		}
 
 		// 셰이더 객체 생성.
+		ID3D11VertexShader* vertexShader = nullptr;
+		result = device.CreateVertexShader(
+			vertexShaderObject->GetBufferPointer(),
+			vertexShaderObject->GetBufferSize(),
+			nullptr,
+			&vertexShader
+		);
+
+		if (FAILED(result))
+		{
+			__debugbreak();
+			return;
+		}
+
+		ID3DBlob* pixelShaderObject = nullptr;
+		result = D3DCompileFromFile(
+			L"HLSLShader/DefaultPS.hlsl",
+			nullptr,
+			nullptr,
+			"main",
+			"ps_5_0",
+			0,
+			0,
+			&pixelShaderObject,
+			nullptr
+		);
+
+		if (FAILED(result))
+		{
+			__debugbreak();
+			return;
+		}
+
+		// 셰이더 객체 생성.
+		ID3D11PixelShader* pixelShader = nullptr;
+		result = device.CreatePixelShader(
+			pixelShaderObject->GetBufferPointer(),
+			pixelShaderObject->GetBufferSize(),
+			nullptr,
+			&pixelShader
+		);
+
+		if (FAILED(result))
+		{
+			__debugbreak();
+			return;
+		}
 
 		// 입력 레이아웃 생성.
+		/*
+			_In_reads_(NumElements)  const D3D11_INPUT_ELEMENT_DESC* pInputElementDescs,
+			_In_range_(0, D3D11_IA_VERTEX_INPUT_STRUCTURE_ELEMENT_COUNT)  UINT NumElements,
+			_In_reads_(BytecodeLength)  const void* pShaderBytecodeWithInputSignature,
+			_In_  SIZE_T BytecodeLength,
+			_COM_Outptr_opt_  ID3D11InputLayout** ppInputLayout) = 0;
+		*/
+
+		/*
+		*	LPCSTR SemanticName;
+			UINT SemanticIndex;
+			DXGI_FORMAT Format;
+			UINT InputSlot;
+			UINT AlignedByteOffset;
+			D3D11_INPUT_CLASSIFICATION InputSlotClass;
+			UINT InstanceDataStepRate;
+		*/
+		D3D11_INPUT_ELEMENT_DESC inputDesc[] =
+		{
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		};
+
+		// 입력 레이아웃 = 정점 셰이더 입력의 명세서.
+		// 따라서 정점 셰이더 정보가 있어야 함.
+		ID3D11InputLayout* inputLayout = nullptr;
+		result = device.CreateInputLayout(
+			inputDesc,
+			_countof(inputDesc),
+			vertexShaderObject->GetBufferPointer(),
+			vertexShaderObject->GetBufferSize(),
+			&inputLayout
+		);
 
 		// 렌더 큐 추가.
 		RenderCommand command;
 		command.vertexBuffer = vertexBuffer;
 		command.indexBuffer = indexBuffer;
 		command.indexCount = _countof(indices);
+		command.vertexShader = vertexShader;
+		command.pixelShader = pixelShader;
+		command.inputLayout = inputLayout;
+
+		renderQueue.emplace_back(command);
+
+		// 사용한 리소스 해제.
+		SafeRelease(vertexShaderObject);
+		SafeRelease(pixelShaderObject);
 	}
 
 	// DrawCall 발생 처리.
 	// -> 렌더링 파이프라인 실행(구동).
 	void Renderer::DrawScene()
 	{
+		// 바인딩.
+		// -> 셰이더 각 단계에 필요한 정보 전달 및 설정.
+		// State 설정.
+		auto& context = GraphicsContext::Get().GetDeviceContext();
 
+		// 렌더 커맨드 가져오기.
+		RenderCommand& command = renderQueue[0];
+
+		// 정점 배열에서 한 데이터의 너비(바이트 너비).
+		uint32_t stride = sizeof(float) * 3;
+		//uint32_t stride = 0;
+		uint32_t offset = 0;
+		context.IASetVertexBuffers(0, 1, &command.vertexBuffer, &stride, &offset);
+
+		context.IASetIndexBuffer(command.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+		context.IASetInputLayout(command.inputLayout);
+
+		// 점 3개씩 잘라서 읽고, 삼각형을 만들어주는 모드.
+		context.IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		// 셰이더 설정.
+		context.VSSetShader(command.vertexShader, nullptr, 0);
+		context.PSSetShader(command.pixelShader, nullptr, 0);
+
+		// 드로우 콜.
+		// 렌더링 파이프라인 동작.
+		context.DrawIndexed(command.indexCount, 0, 0);
 	}
 }
