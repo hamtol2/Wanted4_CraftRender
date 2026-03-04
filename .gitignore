@@ -5,6 +5,8 @@
 
 # ConsoleEngine Includes
 Includes
+HLSLShader
+CompiledShaders
 
 # User-specific files
 *.rsuser
