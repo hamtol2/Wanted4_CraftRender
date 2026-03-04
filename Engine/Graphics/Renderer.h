@@ -2,26 +2,18 @@
 
 #include <vector>
 #include <d3d11.h>
+#include <memory>
 
 namespace Craft
 {
+	class StaticMesh;
+	class Shader;
+
 	// 렌더 명령(RenderCommand).
 	struct RenderCommand
 	{
-		// 정점(Vertex) 버퍼(Buffer-메모리 덩어리).
-		ID3D11Buffer* vertexBuffer = nullptr;
-		// 색인(인덱스-Index) 버퍼(옵션).
-		ID3D11Buffer* indexBuffer = nullptr;
-		// 입력(정점 데이터)의 생김새 (GL:VertexBufferObject).
-		ID3D11InputLayout* inputLayout = nullptr;
-
-		// 필수 셰이더(VS/PS).
-		ID3D11VertexShader* vertexShader = nullptr;
-		ID3D11PixelShader* pixelShader = nullptr;
-
-		// 인덱스 개수(indexCount).
-		// vertexBuffer와 연결된 색인을 어디까지 그릴지 지정.
-		uint32_t indexCount = 0;
+		std::shared_ptr<StaticMesh> mesh;
+		std::shared_ptr<Shader> shader;
 	};
 
 	// DrawCall 담당.
@@ -34,13 +26,20 @@ namespace Craft
 
 		// 초기화.
 		void Initialize();
+
+		// 그리는데 필요한 정보 제출.
+		void Submit(std::shared_ptr<StaticMesh> mesh, std::shared_ptr<Shader> shader);
 		
 		// DrawCall 발생 처리.
 		// -> 렌더링 파이프라인 실행(구동).
 		void DrawScene();
 
+		static Renderer& Get();
+
 	private:
 		// 렌더 큐(Queue).
 		std::vector<RenderCommand> renderQueue;
+
+		static Renderer* instance;
 	};
 }

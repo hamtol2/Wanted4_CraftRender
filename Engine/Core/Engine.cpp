@@ -2,6 +2,7 @@
 #include "Win32Window.h"
 #include "Graphics/GraphicsContext.h"
 #include "Graphics/Renderer.h"
+#include "Level/Level.h"
 
 namespace Craft
 {
@@ -46,6 +47,16 @@ namespace Craft
 
 	void Engine::Run()
 	{
+		LARGE_INTEGER counter;
+		QueryPerformanceCounter(&counter);
+		int64_t currentTime = counter.QuadPart;
+		int64_t previousTime = currentTime;
+
+		LARGE_INTEGER frequency;
+		QueryPerformanceFrequency(&frequency);
+
+		float oneFrameTime = 1.0f / setting.framerate;
+
 		// 메시지 처리 루프.
 		// 창에서 발생하는 메시지 처리 루프.
 		// GetMessage - 동기 방식(Blocking 방식).
@@ -53,6 +64,7 @@ namespace Craft
 		// 동기: 처리되기 전까지 다른 동작 안함.
 		// 비동기: 처리되지 않아도 넘어감.
 		MSG msg = { };
+
 		// 창 종료 메시지가 발생할 때까지 실행.
 		while (msg.message != WM_QUIT)
 		{
@@ -70,13 +82,40 @@ namespace Craft
 			// 창 메시지가 없으면 엔진 로직 처리.
 			else
 			{
-				// 프레임 처리.
-				graphicsContext->BeginScene(0.6f, 0.7f, 0.8f);
+				QueryPerformanceCounter(&counter);
+				currentTime = counter.QuadPart;
 
-				// 장면 그리기.
-				renderer->DrawScene();
+				float deltaTime = static_cast<float>(currentTime - previousTime)
+					/ static_cast<float>(frequency.QuadPart);
 
-				graphicsContext->EndScene(setting.vsync);
+				if (deltaTime >= oneFrameTime)
+				{
+					OnInitialized();
+
+					BeginPlay();
+
+					Tick(deltaTime);
+
+					Draw();
+
+					if (mainLevel)
+					{
+						mainLevel->ProcessAddAndDestroyActors();
+					}
+
+					if (nextLevel)
+					{
+						if (mainLevel)
+						{
+							mainLevel.reset();
+						}
+
+						mainLevel = std::move(nextLevel);
+						nextLevel.reset();
+					}
+
+					previousTime = currentTime;
+				}
 			}
 		}
 	}
@@ -103,5 +142,50 @@ namespace Craft
 
 		}
 		return DefWindowProc(handle, message, wparam, lparam);
+	}
+
+	void Engine::OnInitialized()
+	{
+		if (!mainLevel || mainLevel->HasInitialized())
+		{
+			return;
+		}
+
+		mainLevel->OnInitialized();
+	}
+
+	void Engine::BeginPlay()
+	{
+		if (!mainLevel)
+		{
+			return;
+		}
+
+		mainLevel->BeginPlay();
+	}
+	
+	void Engine::Tick(float deltaTime)
+	{
+		if (!mainLevel)
+		{
+			return;
+		}
+
+		mainLevel->Tick(deltaTime);
+	}
+
+	void Engine::Draw()
+	{
+		if (!mainLevel)
+		{
+			return;
+		}
+
+		graphicsContext->BeginScene(0.6f, 0.7f, 0.8f);
+
+		mainLevel->Draw();
+		renderer->DrawScene();
+
+		graphicsContext->EndScene(setting.vsync);
 	}
 }

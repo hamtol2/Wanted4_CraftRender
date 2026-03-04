@@ -63,7 +63,7 @@ namespace Craft
 	void GraphicsContext::EndScene(uint32_t vsync)
 	{
 		// 모니터에 전달 (백버퍼-프론트버퍼 교환).
-		swapChain->Present(0, 0);
+		swapChain->Present(vsync, 0);
 	}
 
 	GraphicsContext& GraphicsContext::Get()
