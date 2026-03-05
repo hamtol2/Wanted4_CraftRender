@@ -19,7 +19,7 @@ namespace Craft
 	}
 
 	void MeshLoader::GetMesh(
-		const std::string& name, 
+		const std::string& name,
 		std::weak_ptr<StaticMesh>& outMesh)
 	{
 		// 맵에 있는지 확인. 있으면 바로 반환.
@@ -35,7 +35,7 @@ namespace Craft
 	}
 
 	void MeshLoader::LoadMesh(
-		const std::string& name, 
+		const std::string& name,
 		std::weak_ptr<StaticMesh>& outMesh)
 	{
 		std::string path = std::string("../Assets/Meshes/") + name;
@@ -47,6 +47,7 @@ namespace Craft
 		}
 
 		std::vector<Vector3> positions;
+		std::vector<Vector2> texCoords;
 		std::vector<Vertex> vertices;
 
 		std::string line;
@@ -63,7 +64,9 @@ namespace Craft
 			}
 			else if (header == "vt")
 			{
-
+				Vector2 texCoord;
+				ss >> texCoord.x >> texCoord.y;
+				texCoords.emplace_back(texCoord);
 			}
 			else if (header == "vn")
 			{
@@ -79,9 +82,15 @@ namespace Craft
 					"f %d/%d/%d %d/%d/%d %d/%d/%d",
 					&v1, &t1, &n1, &v2, &t2, &n2, &v3, &t3, &n3);
 
-				vertices.emplace_back(positions[v1 - 1]);
-				vertices.emplace_back(positions[v2 - 1]);
-				vertices.emplace_back(positions[v3 - 1]);
+				vertices.emplace_back(
+					positions[v1 - 1], texCoords[t1 - 1]
+				);
+				vertices.emplace_back(
+					positions[v2 - 1], texCoords[t2 - 1]
+				);
+				vertices.emplace_back(
+					positions[v3 - 1], texCoords[t3 - 1]
+				);
 			}
 		}
 

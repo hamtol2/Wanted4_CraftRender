@@ -1,8 +1,10 @@
 #pragma once
 
+#include "Core/Common.h"
+
 namespace Craft
 {
-	class Vector2
+	class CRAFT_API Vector2
 	{
 	public:
 		float x = 0.0f;

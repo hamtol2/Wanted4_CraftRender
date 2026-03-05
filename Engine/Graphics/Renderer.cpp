@@ -48,23 +48,31 @@ namespace Craft
 		// 렌더 커맨드 가져오기.
 		for (const RenderCommand& command : renderQueue)
 		{
-			auto vertexBuffer = command.mesh->GetVertexBuffer();
-			uint32_t stride = command.mesh->GetStride();
-			uint32_t offset = 0;
+			//auto vertexBuffer = command.mesh->GetVertexBuffer();
+			//uint32_t stride = command.mesh->GetStride();
+			//uint32_t offset = 0;
 
-			context.IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
-			context.IASetIndexBuffer(command.mesh->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
-			context.IASetInputLayout(command.shader->GetInputLayout());
+			//context.IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
+			//context.IASetIndexBuffer(command.mesh->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
+			//context.IASetInputLayout(command.shader->GetInputLayout());
 			// 점 3개씩 잘라서 읽고, 삼각형을 만들어주는 모드.
-			context.IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			//context.IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 			// 셰이더 설정.
-			context.VSSetShader(command.shader->GetVertexShader(), nullptr, 0);
-			context.PSSetShader(command.shader->GetPixelShader(), nullptr, 0);
+			//context.VSSetShader(command.shader->GetVertexShader(), nullptr, 0);
+			//context.PSSetShader(command.shader->GetPixelShader(), nullptr, 0);
+
+			// 메시 바인딩.
+			command.mesh->Bind();
+
+			// 셰이더 바인딩.
+			command.shader->Bind();
 
 			// 드로우 콜.
 			// 렌더링 파이프라인 동작.
-			context.DrawIndexed(command.mesh->GetIndexCount(), 0, 0);
+			context.DrawIndexed(
+				command.mesh->GetIndexCount(), 0, 0
+			);
 		}
 
 		renderQueue.clear();

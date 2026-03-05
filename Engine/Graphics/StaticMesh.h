@@ -18,6 +18,9 @@ namespace Craft
 			uint32_t stride,
 			const void* indices,
 			uint32_t indexCount);
+
+		// 셰이더에 연결(바인딩)하는 함수.
+		virtual void Bind();
 		
 		inline ID3D11Buffer* GetVertexBuffer() const { return vertexBuffer; }
 		inline ID3D11Buffer* GetIndexBuffer() const { return indexBuffer; }

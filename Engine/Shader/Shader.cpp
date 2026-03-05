@@ -98,7 +98,8 @@ namespace Craft
 		// 입력 레이아웃 생성.
 		D3D11_INPUT_ELEMENT_DESC inputDesc[] =
 		{
-			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
 
 		// 입력 레이아웃 = 정점 셰이더 입력의 명세서.
@@ -121,5 +122,18 @@ namespace Craft
 		SafeRelease(vertexShader);
 		SafeRelease(pixelShader);
 		SafeRelease(inputLayout);
+	}
+
+	void Shader::Bind()
+	{
+		auto& context
+			= GraphicsContext::Get().GetDeviceContext();
+
+		// 입력 레이아웃(정점 입력의 명세).
+		context.IASetInputLayout(inputLayout);
+		
+		// 셰이더 설정.
+		context.VSSetShader(vertexShader, nullptr, 0);
+		context.PSSetShader(pixelShader, nullptr, 0);
 	}
 }

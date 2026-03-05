@@ -67,4 +67,24 @@ namespace Craft
 			return;
 		}
 	}
+
+	void StaticMesh::Bind()
+	{
+		// DeviceContext 얻어오기.
+		auto& context 
+			= GraphicsContext::Get().GetDeviceContext();
+
+		uint32_t offset = 0;
+		context.IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
+		
+		context.IASetIndexBuffer(
+			indexBuffer, 
+			DXGI_FORMAT_R32_UINT, 
+			0
+		);
+
+		context.IASetPrimitiveTopology(
+			D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST
+		);
+	}
 }
