@@ -96,12 +96,14 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Actor\QuadMeshActor.cpp" />
     <ClCompile Include="Level\TriangleDemoLevel.cpp" />
     <ClCompile Include="Mesh\TriangleMesh.cpp" />
     <ClCompile Include="Actor\TriangleMeshActor.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Actor\QuadMeshActor.h" />
     <ClInclude Include="Level\TriangleDemoLevel.h" />
     <ClInclude Include="Mesh\TriangleMesh.h" />
     <ClInclude Include="Actor\TriangleMeshActor.h" />

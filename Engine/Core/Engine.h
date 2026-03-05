@@ -11,6 +11,7 @@ namespace Craft
 	class Win32Window;
 	class GraphicsContext;
 	class Level;
+	class MeshLoader;
 
 	// 엔진 설정.
 	struct EngineSetting
@@ -66,6 +67,9 @@ namespace Craft
 
 		// 렌더러 객체(장면 그리기 담당).
 		std::unique_ptr<class Renderer> renderer;
+		
+		// 메시 로더 객체(메시 관리).
+		std::unique_ptr<MeshLoader> meshLoader;
 
 		std::shared_ptr<Level> mainLevel;
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Common.h"
 #include <memory>			// 스마트 포인터.
 #include <unordered_map>	// 해시테이블.
 #include <string>
@@ -9,7 +10,7 @@ namespace Craft
 	// 전방 선언.
 	class StaticMesh;
 
-	class MeshLoader
+	class CRAFT_API MeshLoader
 	{
 	public:
 		MeshLoader();

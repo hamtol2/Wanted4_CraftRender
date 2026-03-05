@@ -3,6 +3,7 @@
 #include "Graphics/GraphicsContext.h"
 #include "Graphics/Renderer.h"
 #include "Level/Level.h"
+#include "Resource/MeshLoader.h"
 
 namespace Craft
 {
@@ -41,6 +42,9 @@ namespace Craft
 		// 렌더러 생성.
 		renderer = std::make_unique<Renderer>();
 		renderer->Initialize();
+
+		// 메시로더 객체 생성.
+		meshLoader = std::make_unique<MeshLoader>();
 
 		return true;
 	}
