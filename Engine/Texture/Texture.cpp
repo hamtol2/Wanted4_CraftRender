@@ -115,9 +115,45 @@ namespace Craft
 
 	Texture::~Texture()
 	{
+		SafeRelease(shaderResourceView);
+		SafeRelease(samplerState);
 	}
 
 	void Texture::Bind(uint32_t index)
 	{
+		auto& context = GraphicsContext::Get().GetDeviceContext();
+
+		if (bindType == BindType::VertexShader)
+		{
+			// 셰이더 단계에 바인딩.
+			context.VSSetShaderResources(
+				index, 
+				1, 
+				&shaderResourceView
+			);
+
+			// 샘플러 바인딩.
+			context.VSSetSamplers(
+				index,
+				1,
+				&samplerState
+			);
+		}
+		else if (bindType == BindType::PixelShader)
+		{
+			// 셰이더 단계에 바인딩.
+			context.PSSetShaderResources(
+				index,
+				1,
+				&shaderResourceView
+			);
+
+			// 샘플러 바인딩.
+			context.PSSetSamplers(
+				index,
+				1,
+				&samplerState
+			);
+		}
 	}
 }

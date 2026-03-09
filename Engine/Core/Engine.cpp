@@ -4,6 +4,7 @@
 #include "Graphics/Renderer.h"
 #include "Level/Level.h"
 #include "Resource/MeshLoader.h"
+#include "Resource/TextureLoader.h"
 
 namespace Craft
 {
@@ -45,6 +46,9 @@ namespace Craft
 
 		// 메시로더 객체 생성.
 		meshLoader = std::make_unique<MeshLoader>();
+
+		// 텍스처 로더 객체 생성.
+		textureLoader = std::make_unique<TextureLoader>();
 
 		return true;
 	}

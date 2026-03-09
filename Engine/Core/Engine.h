@@ -12,6 +12,7 @@ namespace Craft
 	class GraphicsContext;
 	class Level;
 	class MeshLoader;
+	class TextureLoader;
 
 	// 엔진 설정.
 	struct EngineSetting
@@ -70,6 +71,9 @@ namespace Craft
 		
 		// 메시 로더 객체(메시 관리).
 		std::unique_ptr<MeshLoader> meshLoader;
+
+		// 텍스처 로더 객체(텍스처 관리).
+		std::unique_ptr<TextureLoader> textureLoader;
 
 		std::shared_ptr<Level> mainLevel;
 
