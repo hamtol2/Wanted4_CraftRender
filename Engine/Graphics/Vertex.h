@@ -12,6 +12,13 @@ namespace Craft
 	class CRAFT_API Vertex
 	{
 	public:
+		// 레이아웃 중요.
+		// 위치(Position).
+		Vector3 position;
+
+		// 텍스처 좌표(Texture Coordinates, UV 좌표).
+		Vector2 texCoord;
+
 		Vertex(
 			const Vector3& position, 
 			Vector2 texCoord = Vector2::Zero);
@@ -20,13 +27,5 @@ namespace Craft
 		// 메모리 너비(Stride).
 		// sizeof(position) + sizeof(uv) + ...;
 		static uint32_t Stride() { return sizeof(Vertex); }
-
-	private:
-		// 레이아웃 중요.
-		// 위치(Position).
-		Vector3 position;
-
-		// 텍스처 좌표(Texture Coordinates, UV 좌표).
-		Vector2 texCoord;
 	};
 }

@@ -7,6 +7,9 @@
 #include "Texture/Texture.h"
 #include "Resource/TextureLoader.h"
 
+#include "Math/Matrix4.h"
+#include "Graphics/StaticMesh.h"
+
 using namespace Craft;
 
 QuadMeshActor::QuadMeshActor()
@@ -23,4 +26,33 @@ QuadMeshActor::QuadMeshActor()
 
 	//std::weak_ptr<Texture> texture;
 	//TextureLoader::Get().Load("T_coord.png", texture);
+}
+
+void QuadMeshActor::Tick(float deltaTime)
+{
+	Actor::Tick(deltaTime);
+
+	// 스케일 테스트.
+	static float scale = 1.0f;
+	static float direction = 1.0f;
+
+	scale += 0.5f * direction * deltaTime;
+	if (scale >= 1.2f)
+	{
+		direction = -1.0f;
+	}
+	else if (scale <= 0.8f)
+	{
+		direction = 1.0f;
+	}
+
+	// 적용(점에다가).
+	auto vertices = mesh.lock()->GetVertices();
+	for (Vertex& vertex : vertices)
+	{
+		vertex.position = vertex.position * Matrix4::Scale(scale);
+	}
+
+	// 정점 버퍼 업데이트.
+	mesh.lock()->UpdateVertexBuffer(vertices);
 }

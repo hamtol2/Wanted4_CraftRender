@@ -1,8 +1,10 @@
 #pragma once
 
 #include "Core/Common.h"
+#include "Vertex.h"
 #include <d3d11.h>
 #include <stdint.h>
+#include <vector>
 
 namespace Craft
 {
@@ -19,6 +21,9 @@ namespace Craft
 			const void* indices,
 			uint32_t indexCount);
 
+		// @Test: 정점 배열이 변경된 경우 정점 버퍼를 업데이트하는 함수.
+		void UpdateVertexBuffer(const std::vector<Vertex>& vertices);
+
 		// 셰이더에 연결(바인딩)하는 함수.
 		virtual void Bind();
 		
@@ -27,10 +32,16 @@ namespace Craft
 		inline uint32_t GetIndexCount() const { return indexCount; }
 		inline uint32_t GetStride() const { return stride; }
 
+		// @Test.
+		inline std::vector<Vertex> GetVertices() const { return vertices; }
+
 	protected:
 		ID3D11Buffer* vertexBuffer = nullptr;
 		ID3D11Buffer* indexBuffer = nullptr;
 		uint32_t indexCount = 0;
 		uint32_t stride = 0;
+
+		// @Test.
+		std::vector<Vertex> vertices;
 	};
 }
