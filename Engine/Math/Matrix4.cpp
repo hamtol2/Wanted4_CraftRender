@@ -21,6 +21,69 @@ namespace Craft
 		memcpy(elements, other.elements, sizeof(float) * 16);
 	}
 
+	Matrix4 Matrix4::Rotation(float x, float y, float z)
+	{
+		// x->y->z.
+		// Pitch -> Yaw - > Roll.
+		return RotationX(x) * RotationY(y) * RotationZ(z);
+	}
+
+	Matrix4 Matrix4::Rotation(const Vector3& rotation)
+	{
+		return Rotation(rotation.x, rotation.y, rotation.z);
+	}
+
+	Matrix4 Matrix4::RotationX(float angle)
+	{
+		// 반환용 변수.
+		Matrix4 m;
+
+		// cos/sin.
+		float cosAngle = std::cos(angle * degreeToRadian);
+		float sinAngle = std::sin(angle * degreeToRadian);
+
+		m.m00 = 1.0f;	m.m01 = 0.0f;		m.m02 = 0.0f;		m.m03 = 0.0f;
+		m.m10 = 0.0f;	m.m11 = cosAngle;	m.m12 = sinAngle;	m.m13 = 0.0f;
+		m.m20 = 0.0f;	m.m21 = -sinAngle;	m.m22 = cosAngle;	m.m23 = 0.0f;
+		m.m30 = 0.0f;	m.m31 = 0.0f;		m.m32 = 0.0f;		m.m33 = 1.0f;
+
+		return m;
+	}
+
+	Matrix4 Matrix4::RotationY(float angle)
+	{
+		// 반환용 변수.
+		Matrix4 m;
+
+		// cos/sin.
+		float cosAngle = std::cos(angle * degreeToRadian);
+		float sinAngle = std::sin(angle * degreeToRadian);
+
+		m.m00 = cosAngle;	m.m01 = 0.0f;	m.m02 = -sinAngle;	m.m03 = 0.0f;
+		m.m10 = 0.0f;		m.m11 = 1.0f;	m.m12 = 0.0f;		m.m13 = 0.0f;
+		m.m20 = sinAngle;	m.m21 = 0.0f;	m.m22 = cosAngle;	m.m23 = 0.0f;
+		m.m30 = 0.0f;		m.m31 = 0.0f;	m.m32 = 0.0f;		m.m33 = 1.0f;
+
+		return m;
+	}
+
+	Matrix4 Matrix4::RotationZ(float angle)
+	{
+		// 반환용 변수.
+		Matrix4 m;
+
+		// cos/sin.
+		float cosAngle = std::cos(angle * degreeToRadian);
+		float sinAngle = std::sin(angle * degreeToRadian);
+
+		m.m00 = cosAngle;	m.m01 = sinAngle;	m.m02 = 0.0f;	m.m03 = 0.0f;
+		m.m10 = -sinAngle;	m.m11 = cosAngle;	m.m12 = 0.0f;	m.m13 = 0.0f;
+		m.m20 = 0.0f;		m.m21 = 0.0f;		m.m22 = 1.0f;	m.m23 = 0.0f;
+		m.m30 = 0.0f;		m.m31 = 0.0f;		m.m32 = 0.0f;	m.m33 = 1.0f;
+
+		return m;
+	}
+
 	Matrix4 Matrix4::Scale(float x, float y, float z)
 	{
 		// 반환용 변수.

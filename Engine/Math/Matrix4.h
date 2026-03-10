@@ -16,6 +16,13 @@ namespace Craft
 		Matrix4(const Matrix4& other);
 		~Matrix4() = default;
 
+		// 회전 행렬.
+		static Matrix4 Rotation(float x, float y, float z);
+		static Matrix4 Rotation(const Vector3& rotation);
+		static Matrix4 RotationX(float angle);
+		static Matrix4 RotationY(float angle);
+		static Matrix4 RotationZ(float angle);
+
 		// 스케일 변환 행렬.
 		// 트랜스폼(Transform->Transformation->변신/변환).
 		static Matrix4 Scale(float x, float y, float z);

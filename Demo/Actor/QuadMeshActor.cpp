@@ -46,11 +46,16 @@ void QuadMeshActor::Tick(float deltaTime)
 		direction = 1.0f;
 	}
 
+	// 회전 테스트.
+	static float rotation = 0.0f;
+	rotation += 60.0f * deltaTime;
+
 	// 적용(점에다가).
 	auto vertices = mesh.lock()->GetVertices();
 	for (Vertex& vertex : vertices)
 	{
 		vertex.position = vertex.position * Matrix4::Scale(scale);
+		vertex.position = vertex.position * Matrix4::RotationZ(rotation);
 	}
 
 	// 정점 버퍼 업데이트.
