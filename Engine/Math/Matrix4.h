@@ -16,6 +16,16 @@ namespace Craft
 		Matrix4(const Matrix4& other);
 		~Matrix4() = default;
 
+		// 전치(Transpose).
+		static Matrix4 Transpose(const Matrix4& matrix);
+
+		// 아핀 변환(Affine Transformation).
+		// 동차좌표계(Homogeneous Coordinates).
+
+		// 이동 행렬.
+		static Matrix4 Translation(float x, float y, float z);
+		static Matrix4 Translation(const Vector3& position);
+
 		// 회전 행렬.
 		static Matrix4 Rotation(float x, float y, float z);
 		static Matrix4 Rotation(const Vector3& rotation);

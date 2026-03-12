@@ -3,6 +3,7 @@
 #include "GraphicsContext.h"
 #include "StaticMesh.h"
 #include "Shader/Shader.h"
+#include "Math/Transform.h"
 #include <d3dcompiler.h>
 #include <cassert>
 
@@ -27,11 +28,13 @@ namespace Craft
 
 	void Renderer::Submit(
 		std::shared_ptr<StaticMesh> mesh, 
-		std::shared_ptr<Shader> shader)
+		std::shared_ptr<Shader> shader,
+		std::shared_ptr<Transform> transform)
 	{
 		RenderCommand command;
 		command.mesh = mesh;
 		command.shader = shader;
+		command.transform = transform;
 
 		renderQueue.emplace_back(command);
 	}
@@ -67,6 +70,9 @@ namespace Craft
 
 			// 셰이더 바인딩.
 			command.shader->Bind();
+
+			// 트랜스폼 바인딩.
+			command.transform->Bind();
 
 			// 드로우 콜.
 			// 렌더링 파이프라인 동작.

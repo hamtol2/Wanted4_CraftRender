@@ -9,6 +9,7 @@
 
 #include "Math/Matrix4.h"
 #include "Graphics/StaticMesh.h"
+#include "Math/Transform.h"
 
 using namespace Craft;
 
@@ -50,14 +51,23 @@ void QuadMeshActor::Tick(float deltaTime)
 	static float rotation = 0.0f;
 	rotation += 60.0f * deltaTime;
 
-	// 적용(점에다가).
-	auto vertices = mesh.lock()->GetVertices();
-	for (Vertex& vertex : vertices)
-	{
-		vertex.position = vertex.position * Matrix4::Scale(scale);
-		vertex.position = vertex.position * Matrix4::RotationZ(rotation);
-	}
+	// 위치 테스트.
+	static float xPosition = 0.0f;
+	xPosition += 1.0f * direction * deltaTime;
 
-	// 정점 버퍼 업데이트.
-	mesh.lock()->UpdateVertexBuffer(vertices);
+	// 적용(점에다가).
+	//auto vertices = mesh.lock()->GetVertices();
+	//for (Vertex& vertex : vertices)
+	//{
+	//	vertex.position = vertex.position * Matrix4::Scale(scale);
+	//	vertex.position = vertex.position * Matrix4::RotationZ(rotation);
+	//}
+
+	//// 정점 버퍼 업데이트.
+	//mesh.lock()->UpdateVertexBuffer(vertices);
+
+	// 트랜스폼 조정.
+	transform->rotation.z = rotation;
+	transform->scale = Vector3(scale, scale, scale);
+	transform->position.x = xPosition;
 }

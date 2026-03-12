@@ -21,6 +21,45 @@ namespace Craft
 		memcpy(elements, other.elements, sizeof(float) * 16);
 	}
 
+	Matrix4 Matrix4::Transpose(const Matrix4& matrix)
+	{
+		Matrix4 m = matrix;
+
+		// 전치 (대각선을 기준으로 서로 자기 바꿈).
+		// 의미: 행기준 행렬을 열기준 행렬로 변환.
+		// 반대도 가능.
+		std::swap<float>(m.m01, m.m10);
+		std::swap<float>(m.m02, m.m20);
+		std::swap<float>(m.m03, m.m30);
+
+		std::swap<float>(m.m12, m.m21);
+		std::swap<float>(m.m13, m.m31);
+
+		std::swap<float>(m.m23, m.m32);
+
+		return m;
+	}
+
+	Matrix4 Matrix4::Translation(float x, float y, float z)
+	{
+		// 반환용 변수.
+		Matrix4 m;
+
+		m.m00 = 1.0f;	m.m01 = 0.0f;	m.m02 = 0.0f;	m.m03 = 0.0f;
+		m.m10 = 0.0f;	m.m11 = 1.0f;	m.m12 = 0.0f;	m.m13 = 0.0f;
+		m.m20 = 0.0f;	m.m21 = 0.0f;	m.m22 = 1.0f;	m.m23 = 0.0f;
+
+		// 마지막 행에 이동 성분 적용.
+		m.m30 = x;		m.m31 = y;		m.m32 = z;		m.m33 = 1.0f;
+
+		return m;
+	}
+
+	Matrix4 Matrix4::Translation(const Vector3& position)
+	{
+		return Translation(position.x, position.y, position.z);
+	}
+
 	Matrix4 Matrix4::Rotation(float x, float y, float z)
 	{
 		// x->y->z.
