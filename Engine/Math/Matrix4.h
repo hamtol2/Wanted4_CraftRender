@@ -19,6 +19,9 @@ namespace Craft
 		// 전치(Transpose).
 		static Matrix4 Transpose(const Matrix4& matrix);
 
+		// 역행렬(Inverse).
+		static Matrix4 Inverse(const Matrix4& matrix);
+
 		// 아핀 변환(Affine Transformation).
 		// 동차좌표계(Homogeneous Coordinates).
 

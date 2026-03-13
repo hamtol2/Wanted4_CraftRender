@@ -40,6 +40,12 @@ namespace Craft
 		return m;
 	}
 
+	Matrix4 Matrix4::Inverse(const Matrix4& matrix)
+	{
+		// 주의: matrix를 직교 행렬로 가정하고 사용.
+		return Transpose(matrix);
+	}
+
 	Matrix4 Matrix4::Translation(float x, float y, float z)
 	{
 		// 반환용 변수.

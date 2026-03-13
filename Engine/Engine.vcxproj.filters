@@ -66,6 +66,9 @@
     <ClCompile Include="Math\Transform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Actor\CameraActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Win32Window.h">
@@ -125,11 +128,14 @@
     <ClInclude Include="Math\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Actor\CameraActor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSLShader\DefaultVS.hlsl" />
     <FxCompile Include="HLSLShader\DefaultPS.hlsl" />
-    <FxCompile Include="HLSLShader\TextureMappingVS.hlsl" />
     <FxCompile Include="HLSLShader\TextureMappingPS.hlsl" />
+    <FxCompile Include="HLSLShader\TextureMappingVS.hlsl" />
   </ItemGroup>
 </Project>
