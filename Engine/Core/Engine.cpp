@@ -8,8 +8,12 @@
 
 namespace Craft
 {
+	Engine* Engine::instance = nullptr;
+
 	Engine::Engine()
 	{
+		assert(!instance);
+		instance = this;
 	}
 
 	Engine::~Engine()
@@ -128,6 +132,23 @@ namespace Craft
 		}
 	}
 
+	Engine& Engine::Get()
+	{
+		assert(instance);
+		return *instance;
+	}
+
+	// 화면 너비/높이 반환 함수.
+	uint32_t Engine::GetWidth() const
+	{
+		return window->Width();
+	}
+
+	uint32_t Engine::GetHeight() const
+	{
+		return window->Height();
+	}
+
 	LRESULT Engine::Win32MessageProcedure(
 		HWND handle, UINT message, WPARAM wparam, LPARAM lparam)
 	{
@@ -171,7 +192,7 @@ namespace Craft
 
 		mainLevel->BeginPlay();
 	}
-	
+
 	void Engine::Tick(float deltaTime)
 	{
 		if (!mainLevel)
