@@ -152,6 +152,23 @@ namespace Craft
 		return Scale(scale, scale, scale);
 	}
 
+	Matrix4 Matrix4::LookAt(
+		const Vector3& position, 
+		const Vector3& target, 
+		const Vector3& up)
+	{
+		// 앞 방향(카메라 시선 방향).
+		Vector3 forward = (target - position).Normalized();	// 정규화(Normalize).
+		// 앞방향과 위 방향을 외적해서 앞방향과 직교(90도)하는 오른쪽 방향 구하기.
+		Vector3 right = Cross(up, forward).Normalized();
+		// 업 벡터 구하기.
+		Vector3 upDir = Cross(forward, right);
+
+		// -> 회전 구하기 완료.
+		
+		return Matrix4();
+	}
+
 	Matrix4& Matrix4::operator=(const Matrix4& other)
 	{
 		memcpy(elements, other.elements, sizeof(float) * 16);

@@ -19,6 +19,6 @@ namespace Craft
 	private:
 		// ºä º¯È¯ Çà·Ä.
 		// (R x T)^-1 = T^-1 x R^-1.
-		Matrix4 cameraMatrix;
+		Matrix4 viewMatrix;
 	};
 }

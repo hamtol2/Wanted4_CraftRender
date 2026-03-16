@@ -34,6 +34,12 @@ namespace Craft
 			const Vector3& right
 		);
 
+		// 벡터 길이 구하는 함수.
+		float Length() const;
+
+		// 정규화 함수 (벡터의 크기를 1로 만드는 함수).
+		Vector3 Normalized() const;
+
 		// 전역 변수.
 		static Vector3 Zero;
 		static Vector3 One;

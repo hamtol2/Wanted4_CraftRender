@@ -42,6 +42,15 @@ namespace Craft
 		static Matrix4 Scale(const Vector3& scale);
 		static Matrix4 Scale(float scale);
 
+		// 카메라 변환 행령(뷰 변환).
+		// position: 카메라 위치.
+		// target: 카메라가 바라볼 방향 (시선 방향 계산용).
+		// up: 업 벡터 (보통 월드의 업벡터 넘김).
+		static Matrix4 LookAt(
+			const Vector3& position,
+			const Vector3& target,
+			const Vector3& up);
+
 		// 연산자 오버로딩.
 		Matrix4& operator=(const Matrix4& other);
 		Matrix4 operator*(const Matrix4& other) const;

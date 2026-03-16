@@ -1,4 +1,6 @@
 #include "Vector3.h"
+#include <cmath>
+#include <cassert>
 
 namespace Craft
 {
@@ -50,5 +52,23 @@ namespace Craft
 			(left.z * right.x) - (left.x * right.z),
 			(left.x * right.y) - (left.y * right.x)
 		);
+	}
+
+	float Vector3::Length() const
+	{
+		return sqrt(x * x + y * y + z * z);
+	}
+
+	// 정규화 함수 (벡터의 크기를 1로 만드는 함수).
+	Vector3 Vector3::Normalized() const
+	{
+		// 모든 컴포넌트(항목)을 벡터의 길이 값으로 나누기.
+		float length = Length();
+
+		// 0으로 나누기 방지.
+		assert(length > 0);
+
+		// 정규화 벡터 반환.
+		return Vector3(x / length, y / length, z / length);
 	}
 }

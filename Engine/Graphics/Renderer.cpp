@@ -19,15 +19,31 @@ namespace Craft
 
 	Renderer::~Renderer()
 	{
+		// 카메라 버퍼 리소스 해제.
+		SafeRelease(cameraBuffer);
 	}
 
 	// 초기화.
 	void Renderer::Initialize()
 	{
+		// 카메라 행렬 버퍼 생성.
+		auto& device = GraphicsContext::Get().GetDevice();
+
+		// 버퍼 생성을 위한 설명 구조체.
+		D3D11_BUFFER_DESC bufferDesc = {};
+		bufferDesc.ByteWidth = sizeof(Matrix4);
+		bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+		bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+		// 버퍼 생성.
+		ThrowIfFailed(
+			device.CreateBuffer(&bufferDesc, nullptr, &cameraBuffer),
+			L"Failed to create camera buffer");
 	}
 
 	void Renderer::Submit(
-		std::shared_ptr<StaticMesh> mesh, 
+		std::shared_ptr<StaticMesh> mesh,
 		std::shared_ptr<Shader> shader,
 		std::shared_ptr<Transform> transform)
 	{
@@ -37,6 +53,25 @@ namespace Craft
 		command.transform = transform;
 
 		renderQueue.emplace_back(command);
+	}
+
+	void Renderer::UpdateCameraMatrix(const Matrix4& viewMatrix)
+	{
+		// 카메라 버퍼 업데이트.
+		auto& context = GraphicsContext::Get().GetDeviceContext();
+
+		D3D11_MAPPED_SUBRESOURCE resource = {};
+		ThrowIfFailed(
+			context.Map(cameraBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource),
+			L"Failed to map camera buffer");
+
+		// 행렬 전치.
+		Matrix4 viewMatrixRef = Matrix4::Transpose(viewMatrix);
+
+		// 데이터 업데이트.
+		memcpy(resource.pData, &viewMatrixRef, sizeof(Matrix4));
+
+		context.Unmap(cameraBuffer, 0);
 	}
 
 	// DrawCall 발생 처리.
@@ -73,6 +108,9 @@ namespace Craft
 
 			// 트랜스폼 바인딩.
 			command.transform->Bind();
+
+			// 카메라 버퍼 바인딩.
+			context.VSSetConstantBuffers(1, 1, &cameraBuffer);
 
 			// 드로우 콜.
 			// 렌더링 파이프라인 동작.
