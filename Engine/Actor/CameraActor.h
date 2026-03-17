@@ -15,12 +15,13 @@ namespace Craft
 			float nearDistance = 0.1f,
 			float farDistance = 10000.0f
 		);
-		~CameraActor();
+		virtual ~CameraActor();
 
+	protected:
 		virtual void Tick(float deltaTime) override;
 		virtual void Draw() override;
 
-	private:
+	protected:
 		// ºä º¯È¯ Çà·Ä.
 		// (R x T)^-1 = T^-1 x R^-1.
 		Matrix4 viewMatrix;
