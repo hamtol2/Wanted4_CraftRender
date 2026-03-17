@@ -15,6 +15,6 @@ void TriangleDemoLevel::OnInitialized()
 
 	// 카메라 액터 생성.
 	std::shared_ptr<CameraActor> camera = SpawnActor<CameraActor>();
-	//camera->transform->position.x = 0.5f;
-	camera->transform->rotation.z = 30.0f;
+	camera->transform->position.z = -2.0f;
+	//camera->transform->rotation.z = 30.0f;
 }

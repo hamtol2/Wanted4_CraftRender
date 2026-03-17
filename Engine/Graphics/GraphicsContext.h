@@ -39,6 +39,9 @@ namespace Craft
 		// vsync가 0이면 수직동기화 안함. 1이면 모니터 수직동기화 사용.
 		void EndScene(uint32_t vsync);
 
+		// 화면 크기 변경 처리.
+		void OnResize(uint32_t width, uint32_t height);
+
 		// Getter.
 		inline ID3D11Device& GetDevice() const { return *device; }
 		inline ID3D11DeviceContext& GetDeviceContext() const { return *context; }

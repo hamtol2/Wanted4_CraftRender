@@ -45,6 +45,9 @@ namespace Craft
 			);
 		}
 
+		// 화면 크기 변경 이벤트 처리 함수.
+		void OnResize(uint32_t width, uint32_t height);
+
 		// 싱글톤 접근 함수.
 		static Engine& Get();
 
