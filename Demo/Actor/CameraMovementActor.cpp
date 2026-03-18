@@ -1,7 +1,6 @@
 #include "CameraMovementActor.h"
 #include "Core/Input.h"
 #include "Math/Transform.h"
-#include "Core/Engine.h"
 
 using namespace Craft;
 
@@ -14,10 +13,10 @@ void CameraMovementActor::Tick(float deltaTime)
 	CameraActor::Tick(deltaTime);
 
 	// ESC 키 종료.
-	//if (Input::Get().IsKeyDown(VK_ESCAPE))
-	//{
-	//	//Engine::Get().Quit()
-	//}
+	if (Input::Get().IsKeyDown(VK_ESCAPE))
+	{
+		QuitGame();
+	}
 
 	// 좌우 이동.
 	if (Input::Get().IsKey(VK_RIGHT) 
@@ -58,5 +57,17 @@ void CameraMovementActor::Tick(float deltaTime)
 	{
 		transform->position
 			= transform->position - transform->Up() * deltaTime * moveSpeed;
+	}
+
+	// 마우스 드래그로 회전 처리.
+	if (Input::Get().IsButton(0))
+	{
+		// 좌우 드래그 처리.
+		transform->rotation.y
+			+= dragSpeedOffset * Input::Get().GetMouseDeltaX();
+
+		// 위아래 드래그 처리.
+		transform->rotation.x
+			+= dragSpeedOffset * Input::Get().GetMouseDeltaY();
 	}
 }

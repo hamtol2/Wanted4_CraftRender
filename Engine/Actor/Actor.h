@@ -20,6 +20,9 @@ namespace Craft
 		virtual void Tick(float deltaTime);
 		virtual void Draw();
 
+		// 게임 종료 요청 함수.
+		void QuitGame();
+
 		inline bool HasBeganPlay() const { return hasBeganPlay; }
 		inline bool IsActive() const { return isActive && !hasExpired; }
 		inline bool HasExpired() const { return hasExpired; }
