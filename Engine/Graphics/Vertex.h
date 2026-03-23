@@ -19,9 +19,13 @@ namespace Craft
 		// 텍스처 좌표(Texture Coordinates, UV 좌표).
 		Vector2 texCoord;
 
+		// 노멀(법선) 벡터.
+		Vector3 normal;
+
 		Vertex(
 			const Vector3& position, 
-			Vector2 texCoord = Vector2::Zero);
+			const Vector2& texCoord = Vector2::Zero,
+			const Vector3& normal = Vector3::Zero);
 		~Vertex() = default;
 
 		// 메모리 너비(Stride).
