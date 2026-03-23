@@ -141,7 +141,7 @@
   <ItemGroup>
     <FxCompile Include="HLSLShader\DefaultVS.hlsl" />
     <FxCompile Include="HLSLShader\DefaultPS.hlsl" />
-    <FxCompile Include="HLSLShader\TextureMappingPS.hlsl" />
     <FxCompile Include="HLSLShader\TextureMappingVS.hlsl" />
+    <FxCompile Include="HLSLShader\TextureMappingPS.hlsl" />
   </ItemGroup>
 </Project>
