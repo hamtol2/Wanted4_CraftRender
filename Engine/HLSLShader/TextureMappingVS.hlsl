@@ -10,9 +10,13 @@ cbuffer Transform : register(b0)
     matrix world;
 };
 
+// Constant-buffer must be aligned by 16bytes..
 cbuffer Camera : register(b1)
 {
     matrix camera;
+    float3 cameraPosition;
+    // !!!!!!!!.
+    float padding;
 };
 
 struct VSOutput
@@ -20,6 +24,7 @@ struct VSOutput
     float4 position : SV_POSITION;
     float2 texCoord : TEXCOORD;
     float3 normal : NORMAL;
+    float3 cameraPosition : TEXCOORD1;
 };
 
 VSOutput main(VSInput input)
@@ -30,7 +35,9 @@ VSOutput main(VSInput input)
     output.position = mul(output.position, camera);
     output.texCoord = input.texCoord;
     
-    output.normal = mul(input.normal, (float3x3)world);
+    output.normal = normalize(mul(input.normal, (float3x3)world));
+    
+    output.cameraPosition = cameraPosition;
 
     return output;
 }
