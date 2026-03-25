@@ -3,6 +3,9 @@
 #include "Actor/QuadMeshActor.h"
 #include "Actor/CameraActor.h"
 #include "Actor/CameraMovementActor.h"
+
+#include "Actor/LightActor.h"
+
 #include "Math/Transform.h"
 
 using namespace Craft;
@@ -16,8 +19,13 @@ void TriangleDemoLevel::OnInitialized()
 
 	// 카메라 액터 생성.
 	//std::shared_ptr<CameraActor> camera = SpawnActor<CameraActor>();
-	std::shared_ptr<CameraMovementActor> camera 
+	std::shared_ptr<CameraMovementActor> camera
 		= SpawnActor<CameraMovementActor>();
 	camera->transform->position.z = -2.0f;
 	//camera->transform->rotation.z = 30.0f;
+
+	// 라이트 액터 생성.
+	std::shared_ptr<LightActor> light = SpawnActor<LightActor>();
+	light->transform->position = Vector3(-500.0f, 500.0f, -500.0f);
+	light->SetColor(Vector3(1.0f, 1.0f, 0.0f));
 }

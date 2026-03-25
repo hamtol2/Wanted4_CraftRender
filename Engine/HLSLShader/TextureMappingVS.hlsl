@@ -25,6 +25,7 @@ struct VSOutput
     float2 texCoord : TEXCOORD;
     float3 normal : NORMAL;
     float3 cameraPosition : TEXCOORD1;
+    float3 worldPosition : TEXCOORD2;
 };
 
 VSOutput main(VSInput input)
@@ -32,10 +33,12 @@ VSOutput main(VSInput input)
     VSOutput output;
     //output.position = float4(input.position, 1);
     output.position = mul(float4(input.position, 1), world);
+    output.worldPosition = output.position.xyz;
+    
     output.position = mul(output.position, camera);
     output.texCoord = input.texCoord;
     
-    output.normal = normalize(mul(input.normal, (float3x3)world));
+    output.normal = normalize(mul(input.normal, (float3x3) world));
     
     output.cameraPosition = cameraPosition;
 
