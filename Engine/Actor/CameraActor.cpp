@@ -40,6 +40,18 @@ namespace Craft
 	{
 	}
 
+	void CameraActor::OnResize(uint32_t width, uint32_t height)
+	{
+		// 투영 변환 행렬 업데이트.
+		projectionMatrix = Matrix4::Perspective(
+			fieldOfView,
+			static_cast<float>(width),
+			static_cast<float>(height),
+			nearDistance,
+			farDistance
+		);
+	}
+
 	void CameraActor::Tick(float deltaTime)
 	{
 		Actor::Tick(deltaTime);
