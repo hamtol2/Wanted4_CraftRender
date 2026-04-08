@@ -87,7 +87,7 @@ float4 main(VSOutput input) : SV_TARGET
     
     // rim intensity.
     float rimIntensity = smoothstep(rimAmount - rimWidth, rimAmount + rimWidth, 1 - NdotV);
-    rimIntensity = pow(rimIntensity, rimConstant) /** saturate(NdotL)*/;
+    rimIntensity = pow(rimIntensity, rimConstant) * saturate(NdotL);
     
     // Diffuse + Specular + Ambient(Global-Illumination/Local-Illumination).
     
