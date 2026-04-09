@@ -25,10 +25,16 @@ namespace Craft
 		static MeshLoader& Get();
 
 	private:
-		// 메시 로드 함수.
+		// 메시 로드 함수 (OBJ 포맷).
 		void LoadOBJ(
 			const std::string& name,
 			std::weak_ptr<StaticMesh>& outMesh
+		);
+
+		// 메시 로드 함수 (FBX 포맷).
+		void LoadFBX(
+			const std::string& name,
+			std::shared_ptr<StaticMesh>& outMesh
 		);
 
 	private:
