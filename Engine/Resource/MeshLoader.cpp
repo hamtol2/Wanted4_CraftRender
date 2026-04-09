@@ -54,8 +54,14 @@ namespace Craft
 
 		else if (extension == "fbx" || extension == "FBX")
 		{
+			std::shared_ptr<StaticMesh> newMesh
+				= std::make_shared<StaticMesh>();
+
 			// 없는 경우에는 로드해서 반환.
-			LoadFBX(name, outMesh);
+			LoadFBX(name, newMesh);
+
+			// 출력.
+			outMesh = newMesh;
 		}
 		else
 		{
@@ -210,6 +216,11 @@ namespace Craft
 		// 확인 (메시가 있는지 확인).
 		if (!scene || !scene->HasMeshes())
 		{
+			if (!scene->HasMeshes())
+			{
+				aiReleaseImport(scene);
+			}
+
 			ThrowIfFailed(
 				E_FAIL,
 				L"Failed to open fbx file or fbx has no mesh");
@@ -218,10 +229,13 @@ namespace Craft
 		}
 
 		// 서브 메시 순환하면서 처리 진행.
-		for (uint32_t ix = 0; ix < scene->mNumMeshes; ++ix)
+ 		for (uint32_t ix = 0; ix < scene->mNumMeshes; ++ix)
 		{
 			ProcessMesh(scene->mMeshes[ix], outMesh);
 		}
+
+		// 맵에 저장.
+		meshList.insert({ name, outMesh });
 
 		// 해제.
 		aiReleaseImport(scene);

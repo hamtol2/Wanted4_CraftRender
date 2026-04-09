@@ -8,6 +8,11 @@ public:
 	CameraMovementActor();
 	~CameraMovementActor() = default;
 
+	inline void SetMoveSpeed(float inMoveSpeed)
+	{
+		moveSpeed = inMoveSpeed;
+	}
+
 private:
 	virtual void Tick(float deltaTime) override;
 
