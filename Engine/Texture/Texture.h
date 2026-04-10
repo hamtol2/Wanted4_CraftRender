@@ -34,6 +34,7 @@ namespace Craft
 		};
 
 	public:
+		Texture() = default;
 		Texture(
 			const std::string& name, 
 			BindType bindType = BindType::PixelShader);
@@ -43,11 +44,19 @@ namespace Craft
 		// 설계 관점에서 이 함수가 어디에 있는게 맞는지 고민이 필요.
 		void Bind(uint32_t index = 0);
 
-	private:
+	protected:
 		// 24비트 텍스처를 32bit 텍스처로 변환하는 함수.
-		void ConvertToRGBA(std::unique_ptr<TextureData>& textureData);
+		void ConvertToRGBA(
+			std::unique_ptr<TextureData>& textureData
+		);
 
-	private:
+		// 텍스처 로드 함수.
+		virtual void LoadTexture(const std::string& name);
+
+		// 셰이더 리소스 뷰 & 샘플러 스테이트 생성 함수.
+		virtual void CreateSRVAndSampler();
+
+	protected:
 		// 텍스처 이름.
 		std::string name;
 
