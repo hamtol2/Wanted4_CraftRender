@@ -18,6 +18,8 @@ namespace Craft
 		std::shared_ptr<SubMesh> mesh;
 		std::shared_ptr<Shader> shader;
 		std::shared_ptr<Transform> transform;
+		// 스카이 박스 여부 플래그.
+		bool isSkybox = false;
 	};
 
 	// 카메라 버퍼 데이터.
@@ -57,7 +59,8 @@ namespace Craft
 		void Submit(
 			std::shared_ptr<SubMesh> mesh, 
 			std::shared_ptr<Shader> shader,
-			std::shared_ptr<Transform> transform
+			std::shared_ptr<Transform> transform,
+			bool isSkybox
 		);
 
 		// 카메라 행렬 제출 함수.
@@ -80,6 +83,13 @@ namespace Craft
 		static Renderer& Get();
 
 	private:
+		// 뒷면 제거(은면 제거) RSState 설정.
+		void CullBack();
+
+		// 앞면 제거 RSState 설정.
+		void CullFront();
+
+	private:
 		// 렌더 큐(Queue).
 		std::vector<RenderCommand> renderQueue;
 
@@ -88,6 +98,10 @@ namespace Craft
 
 		// 라이트 버퍼.
 		ID3D11Buffer* lightBuffer = nullptr;
+
+		// 컬링 스테이트 변수.
+		ID3D11RasterizerState* cullFrontRSState = nullptr;
+		ID3D11RasterizerState* cullBackRSState = nullptr;
 
 		static Renderer* instance;
 	};

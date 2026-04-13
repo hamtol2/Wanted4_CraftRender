@@ -42,5 +42,8 @@ namespace Craft
 		std::weak_ptr<StaticMesh> mesh;
 		std::vector<std::shared_ptr<Shader>> shaderList;
 		std::weak_ptr<Level> owner;
+
+		// 큐브맵 여부 플래그.
+		bool isSkybox = false;
 	};
 }

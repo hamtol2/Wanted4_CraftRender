@@ -24,6 +24,10 @@ namespace Craft
 
 		// 라이트 버퍼 리소스 해제.
 		SafeRelease(lightBuffer);
+
+		// RSState 해제.
+		SafeRelease(cullBackRSState);
+		SafeRelease(cullFrontRSState);
 	}
 
 	// 초기화.
@@ -56,23 +60,41 @@ namespace Craft
 			device.CreateBuffer(&lightBufferDesc, nullptr, &lightBuffer),
 			L"Failed to create light buffer"
 		);
+
+		// 래스터라이저 스테이트 객체 생성.
+		D3D11_RASTERIZER_DESC rasterizerDesc = {};
+		rasterizerDesc.FillMode = D3D11_FILL_SOLID;
+		rasterizerDesc.CullMode = D3D11_CULL_BACK;
+		rasterizerDesc.DepthClipEnable = true;
+
+		ThrowIfFailed(
+			device.CreateRasterizerState(&rasterizerDesc, &cullBackRSState),
+			L"Failed to create cull back rs state");
+
+		rasterizerDesc.CullMode = D3D11_CULL_FRONT;
+
+		ThrowIfFailed(
+			device.CreateRasterizerState(&rasterizerDesc, &cullFrontRSState),
+			L"Failed to create cull front rs state");
 	}
 
 	void Renderer::Submit(
 		std::shared_ptr<SubMesh> mesh,
 		std::shared_ptr<Shader> shader,
-		std::shared_ptr<Transform> transform)
+		std::shared_ptr<Transform> transform,
+		bool isSkybox)
 	{
 		RenderCommand command;
 		command.mesh = mesh;
 		command.shader = shader;
 		command.transform = transform;
+		command.isSkybox = isSkybox;
 
 		renderQueue.emplace_back(command);
 	}
 
 	void Renderer::UpdateCameraMatrix(
-		const Matrix4& viewMatrix, 
+		const Matrix4& viewMatrix,
 		const Matrix4& projectionMatrix,
 		const Vector3& position)
 	{
@@ -101,8 +123,8 @@ namespace Craft
 	}
 
 	void Renderer::UpdateLightData(
-		const Vector3& position, 
-		float intensity, 
+		const Vector3& position,
+		float intensity,
 		const Vector3& color)
 	{
 		// 라이트 버퍼 업데이트.
@@ -151,6 +173,12 @@ namespace Craft
 			//context.VSSetShader(command.shader->GetVertexShader(), nullptr, 0);
 			//context.PSSetShader(command.shader->GetPixelShader(), nullptr, 0);
 
+			// 스카이 박스 여부 확인.
+			if (command.isSkybox)
+			{
+				CullFront();
+			}
+
 			// 메시 바인딩.
 			command.mesh->Bind();
 
@@ -171,6 +199,9 @@ namespace Craft
 			context.DrawIndexed(
 				command.mesh->GetIndexCount(), 0, 0
 			);
+
+			// RSState 원상 복구.
+			CullBack();
 		}
 
 		renderQueue.clear();
@@ -180,5 +211,17 @@ namespace Craft
 	{
 		assert(instance);
 		return *instance;
+	}
+
+	void Renderer::CullBack()
+	{
+		auto& context = GraphicsContext::Get().GetDeviceContext();
+		context.RSSetState(cullBackRSState);
+	}
+
+	void Renderer::CullFront()
+	{
+		auto& context = GraphicsContext::Get().GetDeviceContext();
+		context.RSSetState(cullFrontRSState);
 	}
 }

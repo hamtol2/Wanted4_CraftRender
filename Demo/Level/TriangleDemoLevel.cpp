@@ -5,6 +5,8 @@
 #include "Actor/CameraActor.h"
 #include "Actor/CameraMovementActor.h"
 
+#include "Actor/SkyboxActor.h"
+
 #include "Actor/WarriorCharacter.h"
 
 #include "Actor/LightActor.h"
@@ -42,4 +44,11 @@ void TriangleDemoLevel::OnInitialized()
 	std::shared_ptr<LightActor> light = SpawnActor<LightActor>();
 	light->transform->position = Vector3(-500.0f, 500.0f, -500.0f);
 	light->SetColor(Vector3(1.0f, 1.0f, 0.0f));
+
+	// 스카이 박스 추가.
+	std::shared_ptr<SkyboxActor> skybox 
+		= SpawnActor<SkyboxActor>();
+
+	// 스케일 엄청 키우기.
+	skybox->transform->scale = Vector3::One * 10000.0f;
 }

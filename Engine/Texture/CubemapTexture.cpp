@@ -1,9 +1,9 @@
 #include "CubemapTexture.h"
-#include "Library/StbImage.h"
 #include "Graphics/GraphicsContext.h"
 
 namespace Craft
 {
+#include "Library/StbImage.h"
 	CubemapTexture::CubemapTexture()
 	{
 	}
@@ -29,6 +29,10 @@ namespace Craft
 
 		// 이미지 로드 준비.
 		images.reserve(imageCount);
+
+		// data 생성.
+		data = std::make_unique<TextureData>();
+
 		for (const std::string& imageName : imageNames)
 		{
 			// 이미지 로드.

@@ -1,5 +1,7 @@
 #include "TextureLoader.h"
 #include "Texture/Texture.h"
+#include "Texture/CubemapTexture.h"
+
 #include <cassert>
 
 namespace Craft
@@ -34,6 +36,29 @@ namespace Craft
 
 		textureMap.insert({ name, newTexture });
 		
+		outTexture = newTexture;
+	}
+
+	void TextureLoader::LoadCubemap(
+		const std::string& path, 
+		std::weak_ptr<CubemapTexture>& outTexture)
+	{
+		// 검색.
+		auto find = cubemapTextureMap.find(path);
+		if (find != cubemapTextureMap.end())
+		{
+			outTexture = find->second;
+			return;
+		}
+
+		// 생성 및 추가 후 반환.
+		std::shared_ptr<CubemapTexture> newTexture
+			= std::make_shared<CubemapTexture>(path);
+
+		// 맵에 추가.
+		cubemapTextureMap.insert({ path, newTexture });
+
+		// 반환.
 		outTexture = newTexture;
 	}
 

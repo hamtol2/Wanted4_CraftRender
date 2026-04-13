@@ -51,7 +51,8 @@ namespace Craft
 			Renderer::Get().Submit(
 				mesh.lock()->GetSubMesh(ix),
 				shaderList[ix],
-				transform
+				transform,
+				isSkybox
 			);
 		}
 

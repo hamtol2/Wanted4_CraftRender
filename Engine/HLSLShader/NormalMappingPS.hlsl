@@ -103,7 +103,7 @@ float4 main(VSOutput input) : SV_TARGET
     float4 specularColor = float4(specular, 1) * float4(lightColor, 1);
     
     finalColor = diffuse + specularColor 
-        /*+ float4(float3(1.0f, 0.0f, 0.0f) * rimIntensity, 1)*/;
+        + float4(float3(1.0f, 0.0f, 0.0f) * rimIntensity, 1);
     
     //return float4(1.0f, 1.0f, 0.0f, 1.0f);
     //return diffuseMapColor * NdotL;
