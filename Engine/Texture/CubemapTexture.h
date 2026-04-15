@@ -18,6 +18,7 @@ namespace Craft
 
 	private:
 		// 6장 이미지 배열.
-		std::vector<byte*> images;
+		//std::vector<byte*> images;
+		std::vector<std::unique_ptr<TextureData>> imageList;
 	};
 }

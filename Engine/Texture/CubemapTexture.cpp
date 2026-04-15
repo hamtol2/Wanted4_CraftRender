@@ -28,24 +28,28 @@ namespace Craft
 		imageNames.emplace_back(baseFolder + path + "/negz.png");
 
 		// 이미지 로드 준비.
-		images.reserve(imageCount);
+		//images.reserve(imageCount);
+		imageList.reserve(imageCount);
 
 		// data 생성.
-		data = std::make_unique<TextureData>();
+		//data = std::make_unique<TextureData>();
 
 		for (const std::string& imageName : imageNames)
 		{
+			auto& newTextureData
+				= imageList.emplace_back(std::make_unique<TextureData>());
+
 			// 이미지 로드.
-			data->pixelArray = stbi_load(
+			newTextureData->pixelArray = stbi_load(
 				imageName.c_str(),
-				&data->width,
-				&data->height,
-				&data->channelCount,
+				&newTextureData->width,
+				&newTextureData->height,
+				&newTextureData->channelCount,
 				0
 			);
 
 			// 예외처리.
-			if (!data->pixelArray)
+			if (!newTextureData->pixelArray)
 			{
 				ThrowIfFailed(
 					E_FAIL, 
@@ -53,15 +57,15 @@ namespace Craft
 			}
 
 			// 3개 채널이면 4채널로 변환.
-			if (data->channelCount == 3)
+			if (newTextureData->channelCount == 3)
 			{
-				ConvertToRGBA(data);
+				ConvertToRGBA(newTextureData);
 			}
 
 			// 배열에 추가.
-			images.emplace_back(
-				reinterpret_cast<byte*>(data->pixelArray)
-			);
+			//images.emplace_back(
+			//	reinterpret_cast<byte*>(data->pixelArray)
+			//);
 		}
 
 		// 리소스 생성.
@@ -78,8 +82,8 @@ namespace Craft
 		textureDesc.ArraySize = 6;
 		textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 		textureDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
-		textureDesc.Width = data->width;
-		textureDesc.Height = data->height;
+		textureDesc.Width = imageList[0]->width;
+		textureDesc.Height = imageList[0]->height;
 		textureDesc.SampleDesc.Count = 1;
 		textureDesc.SampleDesc.Quality = 0;
 		textureDesc.MipLevels = 1;
@@ -90,9 +94,9 @@ namespace Craft
 		D3D11_SUBRESOURCE_DATA textureDataList[dataCount] = {};
 		for (uint32_t ix = 0; ix < dataCount; ++ix)
 		{
-			textureDataList[ix].pSysMem = images[ix];
+			textureDataList[ix].pSysMem = imageList[ix]->pixelArray;
 			textureDataList[ix].SysMemPitch 
-				= data->width * data->channelCount;
+				= imageList[ix]->width * imageList[ix]->channelCount;
 		}
 
 		ID3D11Texture2D* texture = nullptr;
