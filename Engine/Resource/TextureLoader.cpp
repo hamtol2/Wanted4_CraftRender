@@ -62,6 +62,21 @@ namespace Craft
 		outTexture = newTexture;
 	}
 
+	void TextureLoader::GetNewRenderTexture(
+		std::weak_ptr<RenderTexture>& outTexture, 
+		uint32_t width, uint32_t height)
+	{
+		// 새로운 텍스처 생성.
+		std::shared_ptr<RenderTexture> newTexture
+			= std::make_shared<RenderTexture>(width, height);
+
+		// 배열에 저장.
+		renderTextureList.emplace_back(newTexture);
+
+		// 출력.
+		outTexture = newTexture;
+	}
+
 	TextureLoader& TextureLoader::Get()
 	{
 		assert(instance);

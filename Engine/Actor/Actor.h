@@ -45,5 +45,8 @@ namespace Craft
 
 		// 큐브맵 여부 플래그.
 		bool isSkybox = false;
+
+		// 렌더 텍스처 사용 여부 플래그.
+		bool isUsingRenderTexture = false;
 	};
 }

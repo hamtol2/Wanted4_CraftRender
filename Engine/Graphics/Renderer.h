@@ -20,6 +20,8 @@ namespace Craft
 		std::shared_ptr<Transform> transform;
 		// 스카이 박스 여부 플래그.
 		bool isSkybox = false;
+		// 렌더 텍스처 사용 여부 플래그.
+		bool isUsingRenderTexture = false;
 	};
 
 	// 카메라 버퍼 데이터.
@@ -60,7 +62,8 @@ namespace Craft
 			std::shared_ptr<SubMesh> mesh, 
 			std::shared_ptr<Shader> shader,
 			std::shared_ptr<Transform> transform,
-			bool isSkybox
+			bool isSkybox,
+			bool isUsingRenderTexture
 		);
 
 		// 카메라 행렬 제출 함수.
@@ -83,6 +86,13 @@ namespace Craft
 		static Renderer& Get();
 
 	private:
+
+		// 렌더 텍스처에 그리는 패스(Pass).
+		void DrawToRenderTexturePass();
+
+		// 백버퍼에 그리는 패스(Pass).
+		void DrawScenePass();
+
 		// 뒷면 제거(은면 제거) RSState 설정.
 		void CullBack();
 

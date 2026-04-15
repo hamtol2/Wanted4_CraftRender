@@ -52,7 +52,8 @@ namespace Craft
 				mesh.lock()->GetSubMesh(ix),
 				shaderList[ix],
 				transform,
-				isSkybox
+				isSkybox,
+				isUsingRenderTexture
 			);
 		}
 

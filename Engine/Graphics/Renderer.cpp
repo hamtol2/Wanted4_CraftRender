@@ -82,13 +82,15 @@ namespace Craft
 		std::shared_ptr<SubMesh> mesh,
 		std::shared_ptr<Shader> shader,
 		std::shared_ptr<Transform> transform,
-		bool isSkybox)
+		bool isSkybox,
+		bool isUsingRenderTexture)
 	{
 		RenderCommand command;
 		command.mesh = mesh;
 		command.shader = shader;
 		command.transform = transform;
 		command.isSkybox = isSkybox;
+		command.isUsingRenderTexture = isUsingRenderTexture;
 
 		renderQueue.emplace_back(command);
 	}
@@ -151,6 +153,27 @@ namespace Craft
 	// -> 렌더링 파이프라인 실행(구동).
 	void Renderer::DrawScene()
 	{
+		// 렌더 텍스처에 그리는 패스 실행.
+		DrawToRenderTexturePass();
+
+		// 씬 렌더링 패스(백버퍼에 씬 그리기).
+		DrawScenePass();
+
+		renderQueue.clear();
+	}
+
+	Renderer& Renderer::Get()
+	{
+		assert(instance);
+		return *instance;
+	}
+
+	void Renderer::DrawToRenderTexturePass()
+	{
+	}
+
+	void Renderer::DrawScenePass()
+	{
 		// 바인딩.
 		// -> 셰이더 각 단계에 필요한 정보 전달 및 설정.
 		// State 설정.
@@ -159,20 +182,6 @@ namespace Craft
 		// 렌더 커맨드 가져오기.
 		for (const RenderCommand& command : renderQueue)
 		{
-			//auto vertexBuffer = command.mesh->GetVertexBuffer();
-			//uint32_t stride = command.mesh->GetStride();
-			//uint32_t offset = 0;
-
-			//context.IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
-			//context.IASetIndexBuffer(command.mesh->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
-			//context.IASetInputLayout(command.shader->GetInputLayout());
-			// 점 3개씩 잘라서 읽고, 삼각형을 만들어주는 모드.
-			//context.IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-			// 셰이더 설정.
-			//context.VSSetShader(command.shader->GetVertexShader(), nullptr, 0);
-			//context.PSSetShader(command.shader->GetPixelShader(), nullptr, 0);
-
 			// 스카이 박스 여부 확인.
 			if (command.isSkybox)
 			{
@@ -203,14 +212,6 @@ namespace Craft
 			// RSState 원상 복구.
 			CullBack();
 		}
-
-		renderQueue.clear();
-	}
-
-	Renderer& Renderer::Get()
-	{
-		assert(instance);
-		return *instance;
 	}
 
 	void Renderer::CullBack()
