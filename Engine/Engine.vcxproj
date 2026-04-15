@@ -128,6 +128,7 @@ xcopy $(OutDir)\Engine.lib ..\Library\Engine\$(Configuration)\ /e /y /i</Command
     <ClCompile Include="Shader\SpecularMappingShader.cpp" />
     <ClCompile Include="Shader\TextureMappingShader.cpp" />
     <ClCompile Include="Texture\CubemapTexture.cpp" />
+    <ClCompile Include="Texture\RenderTexture.cpp" />
     <ClCompile Include="Texture\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +158,7 @@ xcopy $(OutDir)\Engine.lib ..\Library\Engine\$(Configuration)\ /e /y /i</Command
     <ClInclude Include="Shader\SpecularMappingShader.h" />
     <ClInclude Include="Shader\TextureMappingShader.h" />
     <ClInclude Include="Texture\CubemapTexture.h" />
+    <ClInclude Include="Texture\RenderTexture.h" />
     <ClInclude Include="Texture\Texture.h" />
   </ItemGroup>
   <ItemGroup>

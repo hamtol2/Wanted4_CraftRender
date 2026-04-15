@@ -1,6 +1,7 @@
 #include "TextureLoader.h"
 #include "Texture/Texture.h"
 #include "Texture/CubemapTexture.h"
+#include "Texture/RenderTexture.h"
 
 #include <cassert>
 
