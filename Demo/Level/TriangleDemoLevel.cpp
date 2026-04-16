@@ -51,4 +51,12 @@ void TriangleDemoLevel::OnInitialized()
 
 	// 스케일 엄청 키우기.
 	skybox->transform->scale = Vector3::One * 10000.0f;
+
+	// 쿼드 메시 액터 추가.
+	std::shared_ptr<QuadMeshActor> quad
+		= SpawnActor<QuadMeshActor>();
+
+	quad->transform->position.x = 100.0f;
+	quad->transform->position.y = 100.0f;
+	quad->transform->scale = Vector3::One * 100.0f;
 }

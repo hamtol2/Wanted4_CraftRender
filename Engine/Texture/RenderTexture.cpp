@@ -53,6 +53,7 @@ namespace Craft
 		shaderResourceViewDesc.Format = textureDesc.Format;
 		shaderResourceViewDesc.ViewDimension
 			= D3D11_SRV_DIMENSION_TEXTURE2D;
+		shaderResourceViewDesc.Texture2D.MipLevels = 1;
 
 		ThrowIfFailed(
 			device.CreateShaderResourceView(

@@ -4,6 +4,10 @@
 #include "StaticMesh.h"
 #include "Shader/Shader.h"
 #include "Math/Transform.h"
+
+#include "Resource/TextureLoader.h"
+#include "Texture/RenderTexture.h"
+
 #include <d3dcompiler.h>
 #include <cassert>
 
@@ -170,10 +174,88 @@ namespace Craft
 
 	void Renderer::DrawToRenderTexturePass()
 	{
+		auto& context
+			= GraphicsContext::Get().GetDeviceContext();
+
+		// 렌더 텍스처를 순회하면서 드로우 처리.
+		const uint32_t count
+			= TextureLoader::Get().GetRenderTextureCount();
+		for (uint32_t ix = 0; ix < count; ++ix)
+		{
+			auto renderTexture
+				= TextureLoader::Get().GetRenderTexture(ix);
+			// 클리어 색상.
+			float color[] = { 1.0f,1.0f,1.0f,1.0f };
+
+			// RTV 임시로 저장.
+			auto* renderTargetView
+				= renderTexture->GetRenderTargetView();
+
+			// OM 단계에서 RTV/DSV 바인딩.
+			context.OMSetRenderTargets(
+				1,
+				&renderTargetView,
+				renderTexture->GetDepthStencilView()
+			);
+
+			//GetLastError()
+
+			// 클리어 처리.
+			context.ClearRenderTargetView(renderTargetView, color);
+			context.ClearDepthStencilView(
+				renderTexture->GetDepthStencilView(),
+				D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
+				1.0f,
+				0
+			);
+
+			// 드로우.
+			for (const RenderCommand& command : renderQueue)
+			{
+				// 렌더 텍스처는 건너뛰기.
+				if (command.isUsingRenderTexture)
+				{
+					continue;
+				}
+
+				// 스카이 박스 여부 확인.
+				if (command.isSkybox)
+				{
+					CullFront();
+				}
+
+				// 메시 바인딩.
+				command.mesh->Bind();
+
+				// 셰이더 바인딩.
+				command.shader->Bind();
+
+				// 트랜스폼 바인딩.
+				command.transform->Bind();
+
+				// 카메라 버퍼 바인딩.
+				context.VSSetConstantBuffers(1, 1, &cameraBuffer);
+
+				// 라이트 버퍼 바인딩.
+				context.PSSetConstantBuffers(0, 1, &lightBuffer);
+
+				// 드로우 콜.
+				// 렌더링 파이프라인 동작.
+				context.DrawIndexed(
+					command.mesh->GetIndexCount(), 0, 0
+				);
+
+				// RSState 원상 복구.
+				CullBack();
+			}
+		}
 	}
 
 	void Renderer::DrawScenePass()
 	{
+		// 원래 RTV/DSV 설정 및 클리어 처리.
+		GraphicsContext::Get().BeginScene(0.6f, 0.7f, 0.8f);
+
 		// 바인딩.
 		// -> 셰이더 각 단계에 필요한 정보 전달 및 설정.
 		// State 설정.
