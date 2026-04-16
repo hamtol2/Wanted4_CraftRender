@@ -19,6 +19,8 @@ using namespace Craft;
 
 QuadMeshActor::QuadMeshActor()
 {
+	isUsingRenderTexture = true;
+
 	// 메시 로드 요청.
 	MeshLoader::Get().GetMesh("Quad.obj", mesh);
 
